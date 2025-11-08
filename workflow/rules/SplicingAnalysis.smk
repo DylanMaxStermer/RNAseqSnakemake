@@ -226,9 +226,8 @@ rule leafcutter2_ClassifyJuncs_ClusterPerInd:
         mem_mb = 16000
     shell:
         """
-        python workflow/scripts/leafcutter2/scripts/ForwardSpliceJunctionClassifier.py -c {input.junclist} -G {input.fa} -A {input.gtf} -v -r {output.outdir} &> {log}
+        python workflow/scripts/chao_ForwardSpliceJunctionClassifier.py -c {input.junclist} -G {input.fa} -A {input.gtf} -v -r {output.outdir} &> {log}
         """
-
 rule leafcutter_ds_contrasts:
     input:
         groupfile = lambda wildcards: os.path.abspath(config['contrast_group_files_prefix'] + "{contrast}.txt"),
