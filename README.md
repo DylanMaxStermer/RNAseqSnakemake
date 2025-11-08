@@ -64,7 +64,11 @@ Create `config/STAR_Genome_List.tsv` with genome information (see template below
 
 ### Step 2: Install dependencies
 
-[Instructions for conda/mamba environment setup will go here]
+Create and activate the conda environment:
+```bash
+conda env create -f rnaSeqAnalysis.yaml
+conda activate rnaSeqAnalysis
+```
 
 ### Step 3: Execute workflow
 
