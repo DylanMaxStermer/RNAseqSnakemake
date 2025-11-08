@@ -1,0 +1,10 @@
+name: ascp
+channels:
+  - hcc
+  - bioconda
+  - defaults
+  - conda-forge
+  - r
+dependencies:
+  - aspera-cli=3.9.6=h5e1937b_0
+prefix: /project/yangili1/dylan_stermer/miniconda3/conda-envs/ascp

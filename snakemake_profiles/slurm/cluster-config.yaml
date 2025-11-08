@@ -1,0 +1,8 @@
+__default__:
+    account: pi-yangili1
+    partition: caslake # the partition you use broadwl
+    nodes: 1
+    ntasks: 1
+    mem: 4000
+    output: "/dev/null"
+    job-name: "{rule}.{wildcards}"

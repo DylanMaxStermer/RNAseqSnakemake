@@ -1,0 +1,45 @@
+# Results and outputs
+results/
+logs/
+benchmarks/
+
+# Snakemake metadata
+.snakemake/
+
+# Conda environments
+.snakemake/conda/
+
+# Temp files
+.snakemake/tmp/
+.snakemake/shadow/
+
+# Slurm logs
+slurm-*.out
+*.sbatch
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# R
+.Rhistory
+.RData
+.Rproj.user
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Large data files (optional - only if not tracking in git)
+# config/samples.tsv
+# config/STAR_Genome_List.tsv
