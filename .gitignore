@@ -1,7 +1,17 @@
 # Results and outputs
-results/
-logs/
-benchmarks/
+# .gitignore
+# Ignore everything under results, logs, benchmarks
+results/*
+logs/*
+
+# But keep the directory structure placeholders
+!results/.gitkeep
+!logs/.gitkeep
+
+# Contrast Files 
+config/contrast_groupfiles/
+config/contrast_test/
+!config/contrast_groupfiles/.gitkeep
 
 # Snakemake metadata
 .snakemake/
