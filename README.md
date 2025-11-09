@@ -58,9 +58,9 @@ project_root/
 
 Edit `config/config.yaml` to set paths and parameters.
 
-Create `config/samples.tsv` with your sample metadata (see template below).
+Create `config/samples.tsv` with your sample metadata 
 
-Create `config/STAR_Genome_List.tsv` with genome information (see template below).
+Create `config/STAR_Genome_List.tsv` with genome information 
 
 ### Step 2: Install dependencies
 
@@ -93,20 +93,14 @@ snakemake --profile snakemake_profiles/slurm
 
 ### samples.tsv
 
-[Template and description will go here]
+Required columns: `sample`, `STARGenomeName`, `Strandedness`, `Aligner`, `R1`, `R2`
 
-### STAR_Genome_List.tsv
+Optional columns: `StudyFirstAuthor`, `cell_type`, `Approach`, `Description`, `SRA_accession`, `Platform`, `R1_link`, `R2_link`
 
-[Template and description will go here]
+The `sample` column defines output file names. `STARGenomeName` specifies which genome to use from `STAR_Genome_List.tsv`. `R1` and `R2` provide paths to local FASTQ files, or leave blank and provide `SRA_accession` to download from SRA. `Strandedness` should be `U` (unstranded), `FR` (forward), or `RF` (reverse). `Aligner` should be `STAR` or `minimap2`.
 
----
-
-## Output
-
-[Description of output files and directory structure will go here]
-
----
-
-## Citation
-
-[Citation information will go here]
+Example:
+```
+sample	STARGenomeName	R1	R2	SRA_accession	Strandedness	Aligner
+sample1	hg38	/path/to/R1.fq.gz	/path/to/R2.fq.gz		U	STAR
+```
