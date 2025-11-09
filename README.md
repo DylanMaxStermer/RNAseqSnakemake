@@ -107,4 +107,5 @@ sample1	hg38	/path/to/R1.fq.gz	/path/to/R2.fq.gz		U	STAR
 
 ## Overview 
 
-![Workflow DAG](.snakemake/rulegraph.svg)
+![Workflow DAG](config/rulegraph.svg)
+
