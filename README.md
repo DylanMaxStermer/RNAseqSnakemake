@@ -84,7 +84,7 @@ snakemake --cores $N
 
 using `$N` cores or run it in a cluster environment via the included slurm snakemake profile:
 ```bash
-snakemake --profile snakemake_profiles/slurm
+snakemake --profile snakemake_profiles/slurm  --conda-frontend conda
 ```
 
 ---
@@ -104,3 +104,7 @@ Example:
 sample	STARGenomeName	R1	R2	SRA_accession	Strandedness	Aligner
 sample1	hg38	/path/to/R1.fq.gz	/path/to/R2.fq.gz		U	STAR
 ```
+
+## Overview 
+
+![Workflow DAG](rulegraph.svg)
