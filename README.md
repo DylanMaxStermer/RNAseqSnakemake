@@ -1,6 +1,6 @@
 # Snakemake Workflow – RNAseq
 
-**Author:** Dylan Stermer  
+**Author:** Ben Fair, Dylan Stermer  
 **Affiliation:** University of Chicago, Genetics  
 **Contact:** dylanstermer@uchicago.edu  
 **Version:** 1.0  
@@ -27,10 +27,6 @@ project_root/
 │   │   ├── ExpressionAnalysis.smk
 │   │   └── SplicingAnalysis.smk
 │   ├── envs/
-│   │   ├── fastp.yml
-│   │   ├── subread_featureCounts.yml
-│   │   ├── qualimap.yml
-│   │   └── ...
 │   └── scripts/
 │       ├── ExtractIntronsFromGtf.py
 │       ├── CountsToExpressionMatrix.py
@@ -39,12 +35,14 @@ project_root/
 ├── config/
 │   ├── config.yaml
 │   ├── samples.tsv
+│   ├── contrast_groupfiles
 │   └── STAR_Genome_List.tsv
 ├── results/
 │   ├── Alignments/
 │   ├── QC/
 │   ├── featureCounts/
-│   └── SplicingAnalysis/
+│   ├── SplicingAnalysis/
+│   └── ...
 ├── logs/
 ├── .gitignore
 └── README.md
@@ -91,19 +89,67 @@ snakemake --profile snakemake_profiles/slurm  --conda-frontend conda
 
 ## Configuration Files
 
+## Input File Formats
+
 ### samples.tsv
 
-Required columns: `sample`, `STARGenomeName`, `Strandedness`, `Aligner`, `R1`, `R2`
+Tab-separated file defining samples and sequencing data locations.
 
-Optional columns: `StudyFirstAuthor`, `cell_type`, `Approach`, `Description`, `SRA_accession`, `Platform`, `R1_link`, `R2_link`
+**Required columns:**
+- `sample` - Unique sample identifier (used in output file names)
+- `STARGenomeName` - Reference genome name (must match an entry in `STAR_Genome_List.tsv`)
+- `Strandedness` - Library strandedness: `U` (unstranded), `FR` (forward/second-strand), or `RF` (reverse/first-strand)
+- `Aligner` - Alignment tool: `STAR` or `minimap2`
+- `R1` - Path to forward read FASTQ file (or leave blank if using `SRA_accession`)
+- `R2` - Path to reverse read FASTQ file (or leave blank for single-end or SRA download)
 
-The `sample` column defines output file names. `STARGenomeName` specifies which genome to use from `STAR_Genome_List.tsv`. `R1` and `R2` provide paths to local FASTQ files, or leave blank and provide `SRA_accession` to download from SRA. `Strandedness` should be `U` (unstranded), `FR` (forward), or `RF` (reverse). `Aligner` should be `STAR` or `minimap2`.
+**Optional columns:**
+- `SRA_accession` - SRA accession number for automatic download (use instead of providing `R1`/`R2` paths)
+- `StudyFirstAuthor` - First author of study
+- `cell_type` - Cell type or tissue
+- `Approach` - Experimental approach
+- `Description` - Sample description
+- `Platform` - Sequencing platform
+- `R1_link` - URL to forward read file
+- `R2_link` - URL to reverse read file
 
-Example:
+**Example:**
+```tsv
+sample	STARGenomeName	R1	R2	SRA_accession	Strandedness	Aligner	cell_type
+HFF_DMSO_rep1	GRCh38	/data/reads/HFF_DMSO_1_R1.fq.gz	/data/reads/HFF_DMSO_1_R2.fq.gz		RF	STAR	fibroblast
+HFF_SMG1i_rep1	GRCh38	/data/reads/HFF_SMG1i_1_R1.fq.gz	/data/reads/HFF_SMG1i_1_R2.fq.gz		RF	STAR	fibroblast
+SRR_sample		SRR123456			U	STAR	
 ```
-sample	STARGenomeName	R1	R2	SRA_accession	Strandedness	Aligner
-sample1	hg38	/path/to/R1.fq.gz	/path/to/R2.fq.gz		U	STAR
+
+---
+
+### Contrast Group Files
+
+Tab-separated files defining sample groupings for differential analysis. Place these files in `config/contrast_groupfiles/`.
+
+**Required columns:**
+- `sample` - Sample name (must match `sample` column in `samples.tsv`)
+- `contrast` - Group assignment for this sample
+
+**File naming convention:** `<condition1>_vs_<condition2>.txt`
+
+**Example:** `config/contrast_groupfiles/SMG1i_24h_vs_DMSO_0h.txt`
+```tsv
+sample	contrast
+SMG1i_HFF_24h_1	NMD_enriched
+SMG1i_HFF_24h_2	NMD_enriched
+SMG1i_HFF_24h_3	NMD_enriched
+DMSO_HFF_0h_1	Control
+DMSO_HFF_0h_2	Control
+DMSO_HFF_0h_3	Control
 ```
+
+**Notes:**
+- Group names (e.g., `NMD_enriched`, `Control`) are arbitrary but must be consistent within each file
+- Each contrast file defines one pairwise comparison
+- Samples not listed in a contrast file are excluded from that comparison
+
+
 
 ## Overview 
 
