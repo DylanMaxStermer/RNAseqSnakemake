@@ -228,6 +228,7 @@ rule leafcutter2_ClassifyJuncs_ClusterPerInd:
         """
         python workflow/scripts/chao_ForwardSpliceJunctionClassifier.py -c {input.junclist} -G {input.fa} -A {input.gtf} -v -r {output.outdir} &> {log}
         """
+        
 rule leafcutter_ds_contrasts:
     input:
         groupfile = lambda wildcards: os.path.abspath(config['contrast_group_files_prefix'] + "{contrast}.txt"),
@@ -236,7 +237,6 @@ rule leafcutter_ds_contrasts:
         outputdir = directory("results/SplicingAnalysis/differential_splicing/{contrast}/"),
         effect_sizes = "results/SplicingAnalysis/differential_splicing/{contrast}/leaf_effect_sizes.txt",
         pvalues = "results/SplicingAnalysis/differential_splicing/{contrast}/leaf_cluster_significance.txt",
-
     threads: 4
     wildcard_constraints:
         treatment = "|".join(contrasts)
@@ -250,8 +250,13 @@ rule leafcutter_ds_contrasts:
         "logs/leafcutter_ds/{contrast}.log"
     shell:
         """
+        export PATH=/project/yangili1/dylan_stermer/miniconda3/conda-envs/fkoompa/bin:$PATH
+        export LD_LIBRARY_PATH=/project/yangili1/dylan_stermer/miniconda3/conda-envs/fkoompa/lib:$LD_LIBRARY_PATH
+        export R_LIBS_USER=""
+        export R_LIBS=""
+        
         mkdir -p {output.outputdir}
-        /software/R-3.4.3-el7-x86_64/bin/Rscript workflow/scripts/leafcutter/scripts/leafcutter_ds.R -p {threads} -o {output.outputdir}/leaf {params.ExtraParams} -i {params.MinGroupSize} -g {params.MinGroupSize} {input.numers} {input.groupfile} &> {log}
+        Rscript workflow/scripts/leafcutter/scripts/leafcutter_ds.R -p {threads} -o {output.outputdir}/leaf {params.ExtraParams} -i {params.MinGroupSize} -g {params.MinGroupSize} {input.numers} {input.groupfile} &> {log}
         """
 
 rule tidy_leafcutter_differentialSplicing:

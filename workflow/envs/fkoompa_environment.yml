@@ -1,0 +1,13 @@
+name: fkoompa
+channels:
+  - bioconda
+  - defaults
+  - conda-forge
+  - r
+dependencies:
+  - r-devtools
+  - r-rstan=2.21.7
+  - r-stanheaders=2.21.0-7
+  - r-base=4.2.1
+  - r-rcpp=1.0.10
+prefix: /project/yangili1/dylan_stermer/miniconda3/conda-envs/fkoompa
