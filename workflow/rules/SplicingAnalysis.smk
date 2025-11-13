@@ -251,7 +251,7 @@ rule leafcutter_ds_contrasts:
     shell:
         """
         export PATH=/project/yangili1/dylan_stermer/miniconda3/conda-envs/fkoompa/bin:$PATH
-        export LD_LIBRARY_PATH=/project/yangili1/dylan_stermer/miniconda3/conda-envs/fkoompa/lib:$LD_LIBRARY_PATH
+        export LD_LIBRARY_PATH=/project/yangili1/dylan_stermer/miniconda3/conda-envs/fkoompa/lib
         export R_LIBS_USER=""
         export R_LIBS=""
         
@@ -282,6 +282,42 @@ rule tidy_leafcutter_differentialSplicing:
         """
 
 
+rule poisonExonID:
+    """
+    This rule takes leafcutter annotation and count data and identifies potential poison exons.
+    It also colors them in a BED file.
+    
+    The script creates two directories:
+    - PE/ containing poison exon analysis files
+    - ColoredBed/ containing colored BED files for visualization
+    If I want to use output files of this for any other rule I will need to call those files directly. 
+
+    Will need to change the prefix part of the script 
+    """
+    input:
+        gtf = config['GenomesPrefix'] + "{GenomeName}/Reference.gtf",
+        counts = "results/SplicingAnalysis/leafcutter/{GenomeName}/clustering/leafcutter_perind.counts.gz",
+        classifications = "results/SplicingAnalysis/ClassifyJuncs/{GenomeName}/Leaf2_junction_classifications.txt",
+    output:
+        pe_dir = directory("results/SplicingAnalysis/poisonExon/{GenomeName}/PE"),
+        colored_dir = directory("results/SplicingAnalysis/poisonExon/{GenomeName}/ColoredBed"),
+    params:
+        output_prefix = "results/SplicingAnalysis/poisonExon/{GenomeName}/{GenomeName}",
+        max_distance = 500,  # Maximum distance between non-coding introns
+    log:
+        "logs/poisonExonID/{GenomeName}.log"
+    resources:
+        mem_mb = 48000
+    shell:
+        """
+        python workflow/scripts/poisonExon_ID_oct2025.py \
+            -g {input.gtf} \
+            -c {input.counts} \
+            -l {input.classifications} \
+            -o {params.output_prefix} \
+            -d {params.max_distance} \
+            &> {log}
+        """
 
 
 

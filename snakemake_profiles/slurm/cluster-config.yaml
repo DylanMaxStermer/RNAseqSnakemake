@@ -1,8 +1,9 @@
 __default__:
     account: pi-yangili1
-    partition: caslake # the partition you use broadwl
+    partition: caslake
     nodes: 1
     ntasks: 1
     mem: 4000
-    output: "/dev/null"
+    output: "logs/slurm/%j_%x.out"  # Changed from /dev/null
+    error: "logs/slurm/%j_%x.err"   # Add error logs
     job-name: "{rule}.{wildcards}"
