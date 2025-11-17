@@ -9,6 +9,13 @@ config/contrast_groupfiles/*
 !config/contrast_groupfiles/.gitkeep
 config/contrast_test/
 
+# Analysis
+
+analysis/plots/*
+!analysis/plots/.gitkeep
+analysis/results/*
+!analysis/results/.gitkeep
+
 # Snakemake metadata
 .snakemake/
 

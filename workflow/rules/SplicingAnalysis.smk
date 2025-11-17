@@ -74,8 +74,13 @@ rule AnnotateConcatedUniqJuncFile_basic:
         "../envs/regtools.yml"
     shell:
         """
-        (regtools junctions annotate {input.junc} {input.fa} {input.gtf} | gzip - > {output} ) &> {log}
+        ( zcat {input.junc} \
+            | grep -v 'random' \
+            | grep -v 'chrUn' \
+            | regtools junctions annotate - {input.fa} {input.gtf} \
+            | gzip -c > {output} ) &> {log}
         """
+
 
 rule Add_splice_site_scores_to_regtools_annotate:
     input:

@@ -44,6 +44,8 @@ project_root/
 │   ├── SplicingAnalysis/
 │   └── ...
 ├── logs/
+├── analysis/
+│   └── plots
 ├── .gitignore
 └── README.md
 ```
@@ -149,7 +151,10 @@ DMSO_HFF_0h_3	Control
 - Each contrast file defines one pairwise comparison
 - Samples not listed in a contrast file are excluded from that comparison
 
+### analysis
 
+- This is where Rmd should be kept for each project.
+- New scripts can also be made here
 
 ## Overview 
 
