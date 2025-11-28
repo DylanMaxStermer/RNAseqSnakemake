@@ -136,8 +136,8 @@ Tab-separated files defining sample groupings for differential analysis. Place t
 **File naming convention:** `<condition1>_vs_<condition2>.txt`
 
 **Example:** `config/contrast_groupfiles/SMG1i_24h_vs_DMSO_0h.txt`
+- 2 columns sample &	contrast
 ```tsv
-sample	contrast
 SMG1i_HFF_24h_1	NMD_enriched
 SMG1i_HFF_24h_2	NMD_enriched
 SMG1i_HFF_24h_3	NMD_enriched
