@@ -24,3 +24,28 @@ scratch: "/scratch/midway2/dylanstermer/"
 # links can be used instead if defined in samples, but aspera tends to just
 # work better/faster
 aspera_key: ""
+
+# Reciprocal liftover configuration
+# source_assembly is the assembly of the exons_std.tsv input files (hg38)
+# Each target entry requires the forward chain (hg38 -> target) and reverse chain (target -> hg38)
+liftover:
+  source_assembly: "hg38"
+  targets:
+    mm39:
+      forward_chain: "/project/yangili1/dylan_stermer/ReferenceGenomes/ChainFiles/ChainFiles/FromHg38/Mouse_UCSC.mm39_GencodeBasic46.chain.gz"
+      reverse_chain: "/project/yangili1/dylan_stermer/ReferenceGenomes/ChainFiles/ChainFiles/ToHg38/Mouse_UCSC.mm39_GencodeBasic46.chain.gz"
+    rheMac10:
+      forward_chain: "/project/yangili1/dylan_stermer/ReferenceGenomes/ChainFiles/ChainFiles/FromHg38/Macaque_UCSC.rheMac10_ensv101.chain.gz"
+      reverse_chain: "/project/yangili1/dylan_stermer/ReferenceGenomes/ChainFiles/ChainFiles/ToHg38/Macaque_UCSC.rheMac10_ensv101.chain.gz"
+    galGal6:
+      forward_chain: "/project/yangili1/dylan_stermer/ReferenceGenomes/ChainFiles/ChainFiles/FromHg38/Chicken_UCSC.galGal6_ensv101.chain.gz"
+      reverse_chain: "/project/yangili1/dylan_stermer/ReferenceGenomes/ChainFiles/ChainFiles/ToHg38/Chicken_UCSC.galGal6_ensv101.chain.gz"
+    monDom5:
+      forward_chain: "/project/yangili1/dylan_stermer/ReferenceGenomes/ChainFiles/ChainFiles/FromHg38/Opossum_UCSC.monDom5_ensvUnknown.chain.gz"
+      reverse_chain: "/project/yangili1/dylan_stermer/ReferenceGenomes/ChainFiles/ChainFiles/ToHg38/Opossum_UCSC.monDom5_ensvUnknown.chain.gz"
+    oryCun2:
+      forward_chain: "/project/yangili1/dylan_stermer/ReferenceGenomes/ChainFiles/ChainFiles/FromHg38/Rabbit_UCSC.oryCun2_ensv101.chain.gz"
+      reverse_chain: "/project/yangili1/dylan_stermer/ReferenceGenomes/ChainFiles/ChainFiles/ToHg38/Rabbit_UCSC.oryCun2_ensv101.chain.gz"
+    rn7:
+      forward_chain: "/project/yangili1/dylan_stermer/ReferenceGenomes/ChainFiles/ChainFiles/FromHg38/Rat_UCSC.rn7_RefSeqv108.chain.gz"
+      reverse_chain: "/project/yangili1/dylan_stermer/ReferenceGenomes/ChainFiles/ChainFiles/ToHg38/Rat_UCSC.rn7_RefSeqv108.chain.gz"

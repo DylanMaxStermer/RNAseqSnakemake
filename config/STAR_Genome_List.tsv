@@ -1,4 +1,4 @@
-GenomeName	FastaLink	GtfLink	Notes	ChromLargerThan512Mbp
+GenomeName	FastaLink	GtfLink	Notes	ChromLargerThan512Mbp phyloP	phyloP	phastCons
 Human_ensemblv75	https://ftp.ensembl.org/pub/release-75/fasta/homo_sapiens/dna/Homo_sapiens.GRCh37.75.dna.toplevel.fa.gz	https://ftp.ensembl.org/pub/release-75/gtf/homo_sapiens/Homo_sapiens.GRCh37.75.gtf.gz	Human, GRCh37.75, Homo sapiens	FALSE
 Chicken_ensemblv84	https://ftp.ensembl.org/pub/release-84/fasta/gallus_gallus/dna/Gallus_gallus.Galgal4.dna.toplevel.fa.gz	https://ftp.ensembl.org/pub/release-84/gtf/gallus_gallus/Gallus_gallus.Galgal4.84.gtf.gz	Chicken, Galgal4, Gallus gallus	FALSE
 Macaque_ensemblv84	https://ftp.ensembl.org/pub/release-84/fasta/macaca_mulatta/dna/Macaca_mulatta.MMUL_1.dna.toplevel.fa.gz	https://ftp.ensembl.org/pub/release-84/gtf/macaca_mulatta/Macaca_mulatta.MMUL_1.84.gtf.gz	Macaque, MMUL_1, Macaca mulatta	FALSE
@@ -22,4 +22,6 @@ Opossum_UCSC.monDom5_ensvUnknown	https://hgdownload.soe.ucsc.edu/goldenPath/monD
 Rabbit_UCSC.oryCun2_ensv101	https://hgdownload.soe.ucsc.edu/goldenPath/oryCun2/bigZips/oryCun2.fa.gz	https://hgdownload.soe.ucsc.edu/goldenPath/oryCun2/bigZips/genes/oryCun2.ensGene.gtf.gz	Rabbit, oryCun2, Oryctolagus cuniculus	FALSE
 Rat_UCSC.rn7_RefSeqv108	https://hgdownload.soe.ucsc.edu/goldenPath/rn7/bigZips/rn7.fa.gz	https://hgdownload.soe.ucsc.edu/goldenPath/rn7/bigZips/genes/ncbiRefSeq.gtf.gz	Rat, rn7, Rattus norvegicus	FALSE
 Human_UCSC.CHM13_RefSeq	https://hgdownload.soe.ucsc.edu/goldenPath/hs1/bigZips/hs1.fa.gz	https://hgdownload.soe.ucsc.edu/goldenPath/hs1/bigZips/genes/hs1.ncbiRefSeq.gtf.gz	"Human, CHM13, Homo sapiens"	FALSE
-GRCh38_GencodeRelease44Comprehensive	https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_44/GRCh38.primary_assembly.genome.fa.gz	https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_44/gencode.v44.primary_assembly.annotation.gtf.gz		F
+Saccoglossus_Skow101	https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/003/605/GCF_000003605.2_Skow_1.1/GCF_000003605.2_Skow_1.1_genomic.fna.gz	https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/003/605/GCF_000003605.2_Skow_1.1/GCF_000003605.2_Skow_1.1_genomic.gtf.gz	Saccoglossus kowalevskii, GCF_000003605.2, Skow_1.1	FALSE
+
+GRCh38_GencodeRelease44Comprehensive	https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_44/GRCh38.primary_assembly.genome.fa.gz	https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_44/gencode.v44.primary_assembly.annotation.gtf.gz		FALSE	conservation/hg38.phyloP100way.bw	conservation/hg38.phastCons100way.bw

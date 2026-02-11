@@ -1,0 +1,17 @@
+name: leafcutter2
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.11
+  - argparse-dataclass=2.0.0
+  - bedparse=0.2.3
+  - biopython>=1.83
+  - numpy>=1.26.4
+  - pandas>=2.2.2
+  - pickleshare=0.7.5
+  - pyfastx>=2.1.0
+  - pybedtools>=0.10.0
+  - pysam>=0.22.1
+  - bedtools>=2.30.0

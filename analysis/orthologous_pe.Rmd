@@ -1,0 +1,106 @@
+---
+title: "orthologous_pe"
+author: "DylanStermer"
+date: "2026-01-13"
+output: html_document
+---
+
+# Libraries
+```{r Setup Libraries, message=FALSE, warning=FALSE}
+# Data manipulation libraries
+library(data.table)
+library(tidyverse)
+library(dplyr)
+#library(reshape2)
+library(readr)
+library(purrr)
+library(stringr)
+library(tidyr)
+
+# Genomics-specific libraries
+#library(rtracklayer)
+#library(Rsamtools)
+#library(apeglm)
+#library(topGO)
+#library(org.Hs.eg.db)
+#library(biomaRt)
+
+# Visualization libraries
+library(ggplot2)
+#library(ggrepel)
+library(ggnewscale)
+library(gplots)
+library(cowplot)
+library(ggupset)
+library(ComplexHeatmap)
+library(circlize)
+library(grid)
+#library(magick)
+#library(enrichplot)
+#library(clusterProfiler)
+library(ggfortify)
+#library(UpSetR)
+
+# DESeq2 and edgeR for differential expression analysis
+#library(DESeq2)
+library(edgeR)
+
+# For correlation and heatmap plotting
+library(pheatmap)
+library(corrplot)
+library(RColorBrewer)
+library(scales)
+library(patchwork)
+
+library(rmarkdown)
+library(markdown)
+```
+
+# Data
+
+## a. Orthologs
+```{r}
+ortholog_table <- read_tsv("/project/yangili1/dylan_stermer/Orthologs/output/conserved_exons/human_mouse_chicken.tsv")
+```
+
+## a. Load Ortholog Data
+```{r H-C Human + Mouse Coords}
+# Human
+# Load the BED file
+human_mouse_chicken_hg38 <- read.table(
+  "/project/yangili1/dylan_stermer/Orthologs/output/lifted_coordinates/human/human_mouse_chicken_coordinates_hg38.bed",
+  sep = "\t",
+  header = FALSE,
+  stringsAsFactors = FALSE
+)
+
+# Assign column names directly
+colnames(human_mouse_chicken_hg38) <- c("chr", "start", "stop", "ID", "score", "strand")
+
+# Add Exon_coord
+human_mouse_chicken_hg38 <- human_mouse_chicken_hg38 %>%
+  mutate(
+    Exon_coord = paste0(chr, ":", start -1, "-", stop)
+  )
+
+
+# Mouse
+# Load the BED file
+human_mouse_chicken_mm39<- read.table(
+  "/project/yangili1/dylan_stermer/Orthologs/output/lifted_coordinates/mouse/human_mouse_chicken_coordinates_mm39.bed",
+  sep = "\t",
+  header = FALSE,
+  stringsAsFactors = FALSE
+)
+
+# Assign column names directly
+colnames(human_mouse_chicken_mm39) <- c("chr", "start", "stop", "ID", "score", "strand")
+
+# Add Exon_coord
+human_mouse_chicken_mm39 <- human_mouse_chicken_mm39 %>%
+  mutate(
+    Exon_coord = paste0(chr, ":", start, "-", stop)
+  )
+```
+
+## b. Poison Exon

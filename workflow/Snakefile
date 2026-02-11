@@ -19,7 +19,9 @@ include: "rules/common.py"
 wildcard_constraints:
     GenomeName = "|".join(STAR_genomes.index),
     sample = "|".join(AllSamples),
-    Strandedness = "U|FR|RF"
+    Strandedness = "U|FR|RF",
+    target = "|".join(config.get('liftover', {}).get('targets', {}).keys()),
+    exon_type = "Constitutive|exon_flanking_PE_all|leafcutter_CE_gtf_matched|poisonExon_all"
 
 # ============================================================================
 # Rules
@@ -30,7 +32,11 @@ include: "rules/PreprocessAndAlign.smk"
 include: "rules/QC.smk"
 include: "rules/ExpressionAnalysis.smk"
 include: "rules/MakeBigwigs.smk"
-include: "rules/SplicingAnalysis.smk"
+#include: "rules/SplicingAnalysis.smk"
+#include: "rules/Leafcutter2.smk"
+include: "rules/SplicingLC2.smk"
+include: "rules/ExonCharacteristic.smk"
+include: "rules/LiftOver.smk"
 
 # ============================================================================
 # Targets
@@ -56,8 +62,9 @@ rule all:
         "results/QC/ReadCountsPerSamples.tsv",
         "results/Multiqc",
 
-        # Visualization with BigWigs 
-        #expand("results/bigwigs/unstranded/{sample}.bw", sample=AllSamples),
+        # Visualization with BigWigs
+        expand("results/bigwigs/unstranded/{sample}.bw", sample=AllSamples),
+        expand("results/bigwigs/grouped/{group}.bw", group=BigWigGroups) if BigWigGroups else [],
 
         # Splicing Analysis Using Leafcutter
         ## This will get junction counts and run the junction classifier from leafcutter2 
@@ -69,8 +76,73 @@ rule all:
         # Differential Splicing With Leafcutter
         expand("results/SplicingAnalysis/differential_splicing_tidy/{contrast}/Results.tsv.gz", contrast=contrasts),
 
-        # Poison Exon ID
-        expand("results/SplicingAnalysis/poisonExon/{GenomeName}/PE", GenomeName = samples['STARGenomeName'].unique()),
+        # Leafcutter2 Core Outputs
+        expand("results/SplicingAnalysis/leafcutter2/{GenomeName}/leafcutter2.cluster_ratios.const.gz", GenomeName = samples['STARGenomeName'].unique()),
+        expand("results/SplicingAnalysis/leafcutter2/{GenomeName}/leafcutter2.junction_counts.const.gz", GenomeName = samples['STARGenomeName'].unique()),
+        expand("results/SplicingAnalysis/leafcutter2/{GenomeName}/clustering/leafcutter2_junction_classifications.txt", GenomeName = samples['STARGenomeName'].unique()),
+
+        # Unproductive Event Detection (Poison Junctions)
+        ## Poison Exons - Non-coding exons flanked by coding exons
+        expand("results/SplicingAnalysis/PoisonEvent/Exon/PE/{GenomeName}_coding_noncoding_introns_all.tsv",
+               GenomeName=samples['STARGenomeName'].unique()),
+
+        ## Poison Donors/Acceptors - Alternative splice sites creating non-coding junctions
+        expand("results/SplicingAnalysis/PoisonEvent/DonorAcceptor/PoisonDonorAcceptor/{GenomeName}_poisonDonorAcceptor.bed",
+               GenomeName=samples['STARGenomeName'].unique()),
+
+        ## Poison Skipped - Non-coding junctions spanning from CDS to CDS (exon skipping)
+        expand("results/SplicingAnalysis/PoisonEvent/Skipped/PoisonSkipped/{GenomeName}_poisonSkipped.bed",
+               GenomeName=samples['STARGenomeName'].unique()),
+
+        # Exon Characteristics Analysis
+        ## Conservation analysis plots (phyloP and phastCons)
+        ## NOTE: requires DS-filtered exon types — uncomment when differential splicing data is available
+        #expand("results/ExonCharacteristics/{GenomeName}/phyloP_phastCons/plots/phyloP_phase0_comparison_mean.pdf",
+        #       GenomeName=samples['STARGenomeName'].unique()),
+        #expand("results/ExonCharacteristics/{GenomeName}/phyloP_phastCons/plots/phastCons_phase0_comparison_mean.pdf",
+        #       GenomeName=samples['STARGenomeName'].unique()),
+
+        ## Constitutive exons from single-intron Leafcutter2 clusters
+        expand("results/SplicingAnalysis/productive/Constitutive/{GenomeName}/constitutive_exons.bed",
+               GenomeName=samples['STARGenomeName'].unique()),
+        expand("results/ExonCharacteristics/{GenomeName}/StandardFormat/Constitutive/exons_std.tsv",
+               GenomeName=samples['STARGenomeName'].unique()),
+
+        ## Productive alternative donor/acceptor junctions
+        expand("results/SplicingAnalysis/productive/ProductiveDonorAcceptor/{GenomeName}_altDonorAcceptor.bed",
+               GenomeName=samples['STARGenomeName'].unique()),
+        expand("results/SplicingAnalysis/productive/ProductiveDonorAcceptor/flankingCDS/{GenomeName}_altDonorAcceptor_flankingCDS.tsv",
+               GenomeName=samples['STARGenomeName'].unique()),
+
+        ## Poison donor/acceptor flanking CDS
+        expand("results/SplicingAnalysis/PoisonEvent/DonorAcceptor/PoisonDonorAcceptor/flankingCDS/{GenomeName}_poisonDonorAcceptor_flankingCDS.tsv",
+               GenomeName=samples['STARGenomeName'].unique()),
+
+        ## Alternate donor/acceptor splice site distance distribution plots
+        expand("results/ExonCharacteristics/plots/{GenomeName}/AltDonorAcceptor/distribution/donor/counts/overlay_comparison.png",
+               GenomeName=samples['STARGenomeName'].unique()),
+
+        ## Conservation scores for constitutive exons (no DS filtering required)
+        expand("results/ExonCharacteristics/{GenomeName}/phyloP_phastCons/Constitutive/phyloP35way_phastCons35way_summary.tsv",
+               GenomeName=samples['STARGenomeName'].unique()),
+
+        ## MaxEnt splice site scoring for exon types
+        expand("results/ExonCharacteristics/{GenomeName}/SpliceSites/{exon_type}/donor_sites_scored.bed",
+               GenomeName=samples['STARGenomeName'].unique(),
+               exon_type=["leafcutter_CE_gtf_matched", "poisonExon_all",
+                          "exon_flanking_PE_all", "Constitutive"]),
+        expand("results/ExonCharacteristics/{GenomeName}/SpliceSites/{exon_type}/acceptor_sites_scored.bed",
+               GenomeName=samples['STARGenomeName'].unique(),
+               exon_type=["leafcutter_CE_gtf_matched", "poisonExon_all",
+                          "exon_flanking_PE_all", "Constitutive"]),
+
+        # Reciprocal LiftOver — orthologous exon mapping to other species
+        expand("results/liftOver/{GenomeName}/{exon_type}/{target}/reciprocal/hg38_to_{target}_reciprocal_lifted.tsv",
+               GenomeName=samples['STARGenomeName'].unique(),
+               exon_type=["Constitutive", "exon_flanking_PE_all", "leafcutter_CE_gtf_matched", "poisonExon_all"],
+               target=list(config.get('liftover', {}).get('targets', {}).keys())),
+
+
 
 
 

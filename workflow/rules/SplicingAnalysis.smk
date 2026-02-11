@@ -198,6 +198,11 @@ rule Get5ssSeqs:
 
 
 rule ConvertLeacfutterJuncNames_To_True_Bed_Coords:
+    """
+    The "a[3]-1" in the shell here is actually removing the +1 that exists at all the stop coordinates from leafcutter1 output. 
+    LC1 output has 1bp in each exon flanking an intron. I believe in lc2 it was changed to [0,1) so that there is only a base in the exon
+    at the start coordinate. Which is the 3' exon for the "+" strand and 5' exon for "-" strand. 
+    """
     input:
         junclist = "results/SplicingAnalysis/leafcutter/{GenomeName}/clustering/leafcutter_perind.counts.gz",
     output:
@@ -323,11 +328,6 @@ rule poisonExonID:
             -d {params.max_distance} \
             &> {log}
         """
-
-
-
-
-
 
 
 

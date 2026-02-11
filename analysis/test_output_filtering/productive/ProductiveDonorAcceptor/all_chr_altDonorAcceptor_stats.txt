@@ -1,0 +1,30 @@
+Alt Donor/Acceptor Junction Detection Summary
+============================================================
+
+Total altDonors identified: 1246
+Total altAcceptors identified: 3102
+Total alt donor/acceptor junctions: 4348
+
+altDonors with spanning productive junctions: 1245
+altAcceptors with spanning productive junctions: 3098
+
+Spanning productive per altDonor (mean): 1.44
+Spanning productive per altDonor (max): 6
+
+Spanning productive per altAcceptor (mean): 1.58
+Spanning productive per altAcceptor (max): 12
+
+============================================================
+FRAME PRESERVATION ANALYSIS
+============================================================
+
+altDonors with >= 1 frame-preserving spanning: 886/1245 (71.2%)
+altAcceptors with >= 1 frame-preserving spanning: 2488/3098 (80.3%)
+
+Total altDonor-spanning pairs: 1799
+  Frame-preserving (diff % 3 == 0): 1055 (58.6%)
+  Frame-shifting (diff % 3 != 0): 744 (41.4%)
+
+Total altAcceptor-spanning pairs: 4910
+  Frame-preserving (diff % 3 == 0): 3224 (65.7%)
+  Frame-shifting (diff % 3 != 0): 1686 (34.3%)

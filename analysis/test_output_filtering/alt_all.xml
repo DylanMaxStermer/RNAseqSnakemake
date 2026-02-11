@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Session genome="hg38" locus="chr10:73177681-73178303" version="8">
+    <Resources>
+        <Resource path="../results/SplicingAnalysis/PoisonEvent/Exon/GRCh38_GencodeRelease44Comprehensive/ColoredBed/GRCh38_GencodeRelease44Comprehensive_colored_junctions_all.bed" type="bed"/>
+        <Resource path="productive/ProductiveDonorAcceptor/all_chr_colored_altDonorAcceptor.bed" type="bed"/>
+        <Resource path="../../../ReferenceGenomes/GRCh38_GencodeRelease44Comprehensive/Reference.Transcripts.colored.bed" type="bed"/>
+        <Resource path="../results/SplicingAnalysis/PoisonEvent/DonorAcceptor/GRCh38_GencodeRelease44Comprehensive/PoisonDonorAcceptor/GRCh38_GencodeRelease44Comprehensive_colored_poisonDonorAcceptor.bed" type="bed"/>
+        <Resource path="../../ExonCharacteristic/phyloP/mazin/input/conservation_bigwig/hg38.phyloP30way.bw" type="bw"/>
+        <Resource path="../results/SplicingAnalysis/PoisonEvent/Exon/GRCh38_GencodeRelease44Comprehensive/ColoredBed/GRCh38_GencodeRelease44Comprehensive_colored_junctions_filtered.bed" type="bed"/>
+        <Resource path="../../ExonCharacteristic/phyloP/input/hg38.phyloP100way.bw" type="bw"/>
+    </Resources>
+    <Panel height="3190" name="Panel1770392023730" width="2543">
+        <Track attributeKey="Refseq Genes" clazz="org.broad.igv.track.FeatureTrack" colorScale="ContinuousColorScale;0.0;844.0;255,255,255;0,0,178" displayMode="EXPANDED" fontSize="10" groupByStrand="false" id="https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/ncbiRefSeq.txt.gz" name="Refseq Genes" visible="true"/>
+    </Panel>
+    <Panel height="355" name="Panel1770392043322" width="2543">
+        <Track attributeKey="all_chr_colored_altDonorAcceptor.bed" clazz="org.broad.igv.track.FeatureTrack" displayMode="EXPANDED" fontSize="10" groupByStrand="false" id="/Volumes/project/yangili1/dylan_stermer/GitHubTesting/RNAseq_Snakemake/test_output_filtering/productive/ProductiveDonorAcceptor/all_chr_colored_altDonorAcceptor.bed" name="all_chr_colored_altDonorAcceptor.bed" visible="true"/>
+    </Panel>
+    <Panel height="1055" name="Panel1770392265733" width="2543">
+        <Track attributeKey="GRCh38_GencodeRelease44Comprehensive_colored_poisonDonorAcceptor.bed" clazz="org.broad.igv.track.FeatureTrack" colorScale="ContinuousColorScale;0.0;119.0;255,255,255;0,0,178" displayMode="EXPANDED" fontSize="10" groupByStrand="false" id="/Volumes/project/yangili1/dylan_stermer/GitHubTesting/RNAseq_Snakemake/results/SplicingAnalysis/PoisonEvent/DonorAcceptor/GRCh38_GencodeRelease44Comprehensive/PoisonDonorAcceptor/GRCh38_GencodeRelease44Comprehensive_colored_poisonDonorAcceptor.bed" name="Poison DonorAcceptor.bed" visible="true"/>
+    </Panel>
+    <Panel height="116" name="Panel1770392278181" width="2543">
+        <Track attributeKey="GRCh38_GencodeRelease44Comprehensive_colored_junctions_all.bed" clazz="org.broad.igv.track.FeatureTrack" colorScale="ContinuousColorScale;0.0;30.0;255,255,255;0,0,178" displayMode="SQUISHED" fontSize="10" groupByStrand="false" id="/Volumes/project/yangili1/dylan_stermer/GitHubTesting/RNAseq_Snakemake/results/SplicingAnalysis/PoisonEvent/Exon/GRCh38_GencodeRelease44Comprehensive/ColoredBed/GRCh38_GencodeRelease44Comprehensive_colored_junctions_all.bed" name="PE all" visible="true"/>
+    </Panel>
+    <Panel height="149" name="Panel1770392291836" width="2543">
+        <Track attributeKey="GRCh38_GencodeRelease44Comprehensive_colored_junctions_filtered.bed" clazz="org.broad.igv.track.FeatureTrack" colorScale="ContinuousColorScale;0.0;18.0;255,255,255;0,0,178" displayMode="SQUISHED" fontSize="10" groupByStrand="false" id="/Volumes/project/yangili1/dylan_stermer/GitHubTesting/RNAseq_Snakemake/results/SplicingAnalysis/PoisonEvent/Exon/GRCh38_GencodeRelease44Comprehensive/ColoredBed/GRCh38_GencodeRelease44Comprehensive_colored_junctions_filtered.bed" name="PE Filtered" visible="true"/>
+    </Panel>
+    <Panel height="128" name="Panel1770392293412" width="2543">
+        <Track attributeKey="hg38.phyloP100way.bw" autoScale="true" clazz="org.broad.igv.track.DataSourceTrack" fontSize="10" id="/Volumes/project/yangili1/dylan_stermer/GitHubTesting/ExonCharacteristic/phyloP/input/hg38.phyloP100way.bw" name="hg38.phyloP100way.bw" renderer="BAR_CHART" visible="true" windowFunction="mean">
+            <DataRange baseline="0.0" drawBaseline="true" flipAxis="false" maximum="5.876" minimum="-4.092" type="LINEAR"/>
+        </Track>
+        <Track attributeKey="hg38.phyloP30way.bw" autoScale="true" clazz="org.broad.igv.track.DataSourceTrack" fontSize="10" id="/Volumes/project/yangili1/dylan_stermer/GitHubTesting/ExonCharacteristic/phyloP/mazin/input/conservation_bigwig/hg38.phyloP30way.bw" name="hg38.phyloP30way.bw" renderer="BAR_CHART" visible="true" windowFunction="mean">
+            <DataRange baseline="0.0" drawBaseline="true" flipAxis="false" maximum="1.307" minimum="-3.165" type="LINEAR"/>
+        </Track>
+    </Panel>
+    <Panel height="965" name="Panel1770392295131" width="2543">
+        <Track attributeKey="Reference.Transcripts.colored.bed" clazz="org.broad.igv.track.FeatureTrack" colorScale="ContinuousColorScale;0.0;1068.0;255,255,255;0,0,178" displayMode="SQUISHED" fontSize="10" groupByStrand="false" id="/Volumes/project/yangili1/dylan_stermer/ReferenceGenomes/GRCh38_GencodeRelease44Comprehensive/Reference.Transcripts.colored.bed" name="Reference.Transcripts.colored.bed" visible="true"/>
+    </Panel>
+    <Panel height="151" name="FeaturePanel" width="2543">
+        <Track attributeKey="Reference sequence" clazz="org.broad.igv.track.SequenceTrack" fontSize="10" id="Reference sequence" name="Reference sequence" sequenceTranslationStrandValue="POSITIVE" shouldShowTranslation="true" visible="true"/>
+    </Panel>
+    <PanelLayout dividerFractions="0.0064,0.1592,0.2896,0.4384,0.5352,0.6584,0.7648,0.8752"/>
+    <HiddenAttributes>
+        <Attribute name="DATA FILE"/>
+        <Attribute name="DATA TYPE"/>
+        <Attribute name="NAME"/>
+    </HiddenAttributes>
+</Session>

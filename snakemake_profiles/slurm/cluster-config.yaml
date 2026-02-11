@@ -7,3 +7,6 @@ __default__:
     output: "logs/slurm/%j_%x.out"  # Changed from /dev/null
     error: "logs/slurm/%j_%x.err"   # Add error logs
     job-name: "{rule}.{wildcards}"
+
+#caslake
+#broadwl

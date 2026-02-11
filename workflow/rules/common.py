@@ -129,6 +129,33 @@ if config["contrast_group_files_prefix"]:
     contrasts_df = contrasts_df.merge(samples[["sample", "STARGenomeName"]], on="sample", how="left")
 else:
     contrasts = []
+
+# BigWig grouping functions
+def get_bigwig_groups():
+    """Extract unique bigwig groups from samples dataframe."""
+    if 'bigWigGroup' not in samples.columns:
+        return []
+    groups = samples['bigWigGroup'].dropna()
+    groups = groups[groups != '']
+    return groups.unique().tolist()
+
+def get_samples_for_bigwig_group(wildcards):
+    """Get list of sample bigwig paths for a specific group."""
+    group_samples = samples[samples['bigWigGroup'] == wildcards.group]['sample'].tolist()
+    return expand("results/bigwigs/unstranded/{sample}.bw", sample=group_samples)
+
+def get_genome_for_bigwig_group(wildcards):
+    """Get genome name for a group (validates all samples use same genome)."""
+    group_samples = samples[samples['bigWigGroup'] == wildcards.group]
+    if len(group_samples) == 0:
+        raise ValueError(f"No samples found for bigWigGroup: {wildcards.group}")
+    genomes = group_samples['STARGenomeName'].unique()
+    if len(genomes) > 1:
+        raise ValueError(f"bigWigGroup {wildcards.group} contains samples from multiple genomes: {genomes}")
+    return genomes[0]
+
+BigWigGroups = get_bigwig_groups()
+
 # Input functions and other functions for the snakemake
 
 def min_samples_per_group_for_contrast(wildcards):
@@ -208,3 +235,56 @@ def much_more_mem_after_first_attempt(wildcards, attempt):
         return 4000
     else:
         return 62000
+
+# =============================================================================
+# Helper functions for ExonCharacteristic conservation analysis
+# =============================================================================
+
+def get_conservation_tracks(wildcards):
+    """
+    Get conservation track paths for a genome from STAR_Genome_List.tsv.
+
+    Returns dict with 'phylop' and 'phastcons' keys if available,
+    empty dict otherwise (which causes dependent rules to be skipped).
+
+    Reads from STAR_Genome_List.tsv columns:
+    - phyloP: relative path from GenomesPrefix/GenomeName/ (e.g., "conservation/hg38.phyloP100way.bw")
+    - phastCons: relative path from GenomesPrefix/GenomeName/ (e.g., "conservation/hg38.phastCons100way.bw")
+
+    If columns are missing or contain NA/empty values, returns empty dict.
+    """
+    genome = wildcards.GenomeName
+
+    # Get genome info from STAR_genomes dataframe
+    if genome not in STAR_genomes.index:
+        return {}
+
+    genome_info = STAR_genomes.loc[genome]
+
+    # Check if phyloP and phastCons columns exist and have values
+    phylop_path = genome_info.get('phyloP', pd.NA)
+    phastcons_path = genome_info.get('phastCons', pd.NA)
+
+    # Return empty dict if either is missing/NA/empty
+    if pd.isna(phylop_path) or pd.isna(phastcons_path):
+        return {}
+    if phylop_path == '' or phastcons_path == '':
+        return {}
+
+    # Return full paths to conservation tracks
+    return {
+        "phylop": config["GenomesPrefix"] + genome + "/" + phylop_path,
+        "phastcons": config["GenomesPrefix"] + genome + "/" + phastcons_path
+    }
+
+
+def get_conservation_label(wildcards):
+    """
+    Get conservation label for output file naming.
+
+    Currently returns a fixed label since output naming is standardized.
+    Could be extended to read from STAR_Genome_List.tsv if needed.
+
+    Returns: "phyloP35way_phastCons35way" (default for all genomes)
+    """
+    return "phyloP35way_phastCons35way"
