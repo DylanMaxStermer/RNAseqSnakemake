@@ -25,8 +25,8 @@ SPLICE_SITES_BASE = (
     "results/ExonCharacteristics/GRCh38_GencodeRelease44Comprehensive/SpliceSites"
 )
 LNCRNA_BASE = (
-    "/project/yangili1/dylan_stermer/GitHubTesting//"
-    "maxEnt/output/scores"
+    "/project/yangili1/dylan_stermer/GitHubTesting/"
+    "ExonCharacteristic/maxEnt/output/scores"
 )
 
 CATEGORIES = [
