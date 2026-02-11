@@ -3,49 +3,108 @@
 **Author:** Ben Fair, Dylan Stermer  
 **Affiliation:** University of Chicago, Genetics  
 **Contact:** dylanstermer@uchicago.edu  
-**Version:** 1.0  
-**Last Updated:** 2025-11-08
+**Version:** 2.0
+**Last Updated:** 2026-02-10
 
 ---
 
 ## Description
 
-This workflow contains rules to download genome files, index genomes and align reads with STAR, perform basic QC, count splice junction reads (regtools) and gene reads (featureCounts). Can handle different samples from different species, as defined in `config/STAR_Genome_List.tsv` and `config/samples.tsv`. Because this is often just the start of an RNA-seq analysis, this workflow might be best used as a module in a Snakemake workflow that further extends this work.
+A comprehensive RNA-seq analysis Snakemake workflow covering alignment through splicing characterization. Handles multiple species simultaneously, as defined in `config/STAR_Genome_List.tsv` and `config/samples.tsv`.
+
+**Core capabilities:**
+- Genome indexing (STAR) and read alignment
+- QC (fastp, MultiQC) and gene expression quantification (featureCounts)
+- BigWig generation (unstranded and grouped)
+- Splicing analysis via Leafcutter2: junction counting, PSI quantification, junction classification, differential splicing
+- Poison event identification: poison exons, poison donor/acceptor junctions, poison skipped exons
+- Productive alternative splicing identification: productive donor/acceptor junctions
+- Exon characterization: MaxEntScan splice site scoring, phyloP/phastCons conservation, flanking CDS annotation, splice site distance distributions
+- Reciprocal liftover: mapping exon coordinates from hg38 to orthologous positions in other species
 
 ---
 
 ## Repository Structure
+
 ```
 project_root/
 ├── workflow/
-│   ├── Snakefile
+│   ├── Snakefile                         # Main entry point; defines all targets
 │   ├── rules/
-│   │   ├── common.py
-│   │   ├── IndexGenome.smk
-│   │   ├── PreprocessAndAlign.smk
-│   │   ├── QC.smk
-│   │   ├── ExpressionAnalysis.smk
-│   │   └── SplicingAnalysis.smk
-│   ├── envs/
+│   │   ├── common.py                     # Shared helpers, wildcard setup, config parsing
+│   │   ├── IndexGenome.smk               # STAR genome indexing
+│   │   ├── PreprocessAndAlign.smk        # fastp trimming + STAR alignment
+│   │   ├── QC.smk                        # MultiQC, read count summaries
+│   │   ├── ExpressionAnalysis.smk        # featureCounts gene expression
+│   │   ├── MakeBigwigs.smk               # BigWig generation (unstranded + grouped)
+│   │   ├── SplicingLC2.smk               # Leafcutter2 junction counting, PSI,
+│   │   │                                 #   junction classification, differential splicing,
+│   │   │                                 #   poison/productive event identification
+│   │   ├── ExonCharacteristic.smk        # MaxEntScan scoring, conservation analysis,
+│   │   │                                 #   flanking CDS annotation, splice site
+│   │   │                                 #   distance distributions, constitutive exons
+│   │   └── LiftOver.smk                  # Reciprocal liftover (hg38 → other species)
+│   ├── envs/                             # Conda environment YAML files
+│   │   ├── leafcutter2.yml
+│   │   ├── maxEnt.yml
+│   │   ├── phastcons_analysis.yml
+│   │   └── wiggletools.yaml
 │   └── scripts/
-│       ├── ExtractIntronsFromGtf.py
-│       ├── CountsToExpressionMatrix.py
-│       ├── leafcutter/
-│       └── ...
+│       ├── leafcutter2/                  # Leafcutter2 submodule
+│       ├── ExonCharacteristics/          # Exon characterization scripts
+│       │   ├── calculate_maxent_scores_fast.py
+│       │   ├── extractSpliceSite.py
+│       │   ├── find_cassette_exons_from_leafcutter_leafcutter2.py
+│       │   ├── plot_phastC_phyloP_Exon_and_Intron.py
+│       │   ├── standardize_bed_format.py
+│       │   ├── standardize_constitutive_exons.py
+│       │   ├── single_intron_cds_finder.py
+│       │   └── annotate_constitutive_exon_phase.py
+│       ├── FlankingCDS/
+│       │   ├── flanking_CDS_poisonDonorAcceptor.py
+│       │   └── flanking_CDS_productiveDonorAcceptor.py
+│       ├── 04_reciprocal_liftover_workflow.py
+│       ├── poisonExon_ID_leafcutter2.py
+│       ├── productiveDonorAcceptor_ID_leafcutter2.py
+│       ├── splice_site_distribution.py   # Poison vs. productive splice site distance plots
+│       └── plot_maxent_score_cdfs.py     # Ad-hoc: CDF plots of MaxEntScan scores by exon type
 ├── config/
-│   ├── config.yaml
-│   ├── samples.tsv
-│   ├── contrast_groupfiles
-│   └── STAR_Genome_List.tsv
+│   ├── config.yaml                       # Main config: paths, liftover targets, scratch dir
+│   ├── samples.tsv                       # Sample metadata and FASTQ paths
+│   ├── STAR_Genome_List.tsv              # Genome builds and reference paths
+│   └── contrast_groupfiles/             # Sample group files for differential splicing
 ├── results/
-│   ├── Alignments/
-│   ├── QC/
-│   ├── featureCounts/
+│   ├── Alignments/                       # BAM files and indices
+│   ├── QC/                              # MultiQC reports, read count summaries
+│   ├── featureCounts/                   # Gene expression count matrices
+│   ├── bigwigs/                         # Coverage tracks (unstranded + grouped)
 │   ├── SplicingAnalysis/
-│   └── ...
-├── logs/
-├── analysis/
-│   └── plots
+│   │   ├── leafcutter/                  # Junction counts and PSI tables (BED format)
+│   │   ├── leafcutter2/                 # Leafcutter2 cluster ratios and junction counts
+│   │   ├── ClassifyJuncs/               # Leafcutter2 junction classifications
+│   │   ├── ObservedJuncsAnnotations/    # Junction annotations with splice site scores
+│   │   ├── differential_splicing_tidy/  # Differential splicing results per contrast
+│   │   ├── PoisonEvent/
+│   │   │   ├── Exon/PE/                 # Poison exon calls
+│   │   │   ├── DonorAcceptor/           # Poison donor/acceptor junctions + flanking CDS
+│   │   │   └── Skipped/                 # Poison skipped exon junctions
+│   │   └── productive/
+│   │       ├── Constitutive/            # Constitutive exons from single-intron clusters
+│   │       └── ProductiveDonorAcceptor/ # Productive alt donor/acceptor + flanking CDS
+│   ├── ExonCharacteristics/
+│   │   ├── {GenomeName}/
+│   │   │   ├── StandardFormat/          # Standardized exon TSVs per exon type
+│   │   │   ├── SpliceSites/             # MaxEntScan-scored donor/acceptor BED files
+│   │   │   └── phyloP_phastCons/        # Conservation score summaries and per-exon data
+│   │   └── plots/                       # Splice site distance distribution plots
+│   └── liftOver/                        # Reciprocal liftover results per exon type × target species
+│       └── {GenomeName}/{exon_type}/{target}/
+│           ├── one_way/                 # Standard liftover output
+│           ├── reciprocal/              # Reciprocal-filtered liftover output
+│           └── ortholog_mapping/        # 1-to-1 and 1-to-many ortholog tables
+├── logs/                                # Per-rule log files
+├── analysis/                            # Rmd notebooks and ad-hoc analysis outputs
+├── snakemake_profiles/slurm/            # SLURM cluster submission profile
 ├── .gitignore
 └── README.md
 ```
@@ -90,6 +149,26 @@ snakemake --profile snakemake_profiles/slurm  --conda-frontend conda
 ---
 
 ## Configuration Files
+
+### config/config.yaml
+
+Key settings:
+
+| Key | Description |
+|-----|-------------|
+| `samples` | Path to `samples.tsv` |
+| `STAR_genomes` | Path to `STAR_Genome_List.tsv` |
+| `GenomesPrefix` | Root directory for all reference genome files |
+| `contrast_group_files_prefix` | Path prefix for differential splicing group files |
+| `scratch` | Scratch directory for temporary large files |
+| `liftover.source_assembly` | Assembly name of the input exon files (e.g. `hg38`) |
+| `liftover.targets.{name}.forward_chain` | Chain file: source → target species |
+| `liftover.targets.{name}.reverse_chain` | Chain file: target → source species (for reciprocal filtering) |
+
+Available liftover targets (chain files must exist in `ChainFiles/`):
+`mm39` (Mouse), `rheMac10` (Macaque), `galGal6` (Chicken), `monDom5` (Opossum), `oryCun2` (Rabbit), `rn7` (Rat)
+
+---
 
 ## Input File Formats
 
